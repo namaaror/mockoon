@@ -154,9 +154,9 @@ export class EnvironmentsService extends Logger {
                 map((environment) =>
                   environment
                     ? {
-                        environment,
-                        path: environmentItem.path
-                      }
+                      environment,
+                      path: environmentItem.path
+                    }
                     : null
                 )
               )
@@ -363,6 +363,8 @@ export class EnvironmentsService extends Logger {
     environment?: Environment,
     insertAfterIndex?: number
   ): Observable<[string, string]> {
+    console.log('Inside addEnv ', environment);
+
     return from(
       this.dialogsService.showSaveDialog('Save your new environment')
     ).pipe(
@@ -392,13 +394,14 @@ export class EnvironmentsService extends Logger {
         return EMPTY;
       }),
       tap(([filePath, filename]) => {
+        console.log('filePath: ', filePath, ' fileName: ', filename, 'env: ', environment);
         const newEnvironment = environment
           ? environment
           : BuildEnvironment({
-              hasDefaultHeader: true,
-              hasDefaultRoute: true,
-              port: this.dataService.getNewEnvironmentPort()
-            });
+            hasDefaultHeader: true,
+            hasDefaultRoute: true,
+            port: this.dataService.getNewEnvironmentPort()
+          });
 
         // if a non-default name has been set already (imports), do not use the filename
         if (newEnvironment.name === EnvironmentDefault.name) {
@@ -443,6 +446,28 @@ export class EnvironmentsService extends Logger {
   }
 
   /**
+   * Open an environments from a settings file 
+   *
+   * @param settingsFile
+   * @returns
+   */
+  public newEnvironmentsFromURL(settingsFile: string) {
+    if (settingsFile) {
+      return this.http.get(settingsFile, { responseType: 'text' })
+        .subscribe(async data => {
+          const settingsData = await JSON.parse(data);
+          if (settingsData && settingsData['environments']) {
+            settingsData['environments'].forEach(env => {
+              this.newEnvironmentFromURL(env.path).subscribe();
+            });
+          }
+        });
+    }
+
+    return EMPTY;
+  }
+
+  /**
    * Open an environment from a URL
    *
    * @param url
@@ -456,10 +481,9 @@ export class EnvironmentsService extends Logger {
         map<string, Environment>((data) => JSON.parse(data)),
         switchMap((environment: Environment) => this.verifyData(environment)),
         switchMap((environment: Environment) => {
-          const migratedEnvironment =
-            this.dataService.migrateAndValidateEnvironment(environment);
+          this.dataService.migrateAndValidateEnvironment(environment);
 
-          return this.addEnvironment(migratedEnvironment);
+          return this.openEnvironment(url);
         }),
         catchError((error) => {
           this.logMessage('error', 'NEW_ENVIRONMENT_URL_ERROR', {
@@ -517,11 +541,11 @@ export class EnvironmentsService extends Logger {
     const pathSource = environmentPath
       ? of(environmentPath)
       : from(
-          this.dialogsService.showOpenDialog(
-            'Open environment JSON file',
-            'json'
-          )
-        );
+        this.dialogsService.showOpenDialog(
+          'Open environment JSON file',
+          'json'
+        )
+      );
 
     return pathSource.pipe(
       filter((filePath) => {
@@ -535,6 +559,11 @@ export class EnvironmentsService extends Logger {
           .environments.find(
             (environmentItem) => environmentItem.path === filePath
           );
+
+        // {
+        //   "uuid": "27c26966-aedc-484b-8a94-7674c9730e65",
+        //   "path": "/Users/namanarora/Desktop/mockoon_demo.json"
+        // }
 
         if (openedEnvironment !== undefined) {
           this.store.update(setActiveEnvironmentAction(openedEnvironment.uuid));

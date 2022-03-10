@@ -16,6 +16,7 @@ import {
   PreMigrationSettings,
   SettingsProperties
 } from 'src/renderer/app/models/settings.model';
+import { LocalStorageService } from 'src/renderer/app/services/local-storage.service';
 import { StorageService } from 'src/renderer/app/services/storage.service';
 import { TelemetryService } from 'src/renderer/app/services/telemetry.service';
 import { updateSettingsAction } from 'src/renderer/app/stores/actions';
@@ -28,13 +29,17 @@ import {
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
   public oldLastMigration: number;
-  private storageKey = 'settings';
+  private storagePath: string;
 
   constructor(
     private store: Store,
     private storageService: StorageService,
-    private telemetryService: TelemetryService
+    private telemetryService: TelemetryService,
+    private localStorageService: LocalStorageService
   ) {
+    // Get storagePath
+    this.storagePath = this.localStorageService.getItem('settingPath');
+
     // switch Faker locale
     this.store
       .select('settings')
@@ -62,8 +67,10 @@ export class SettingsService {
    * @returns
    */
   public loadSettings(): Observable<any> {
+    console.log('loadSettings');
+
     return this.storageService
-      .loadData<PreMigrationSettings>(this.storageKey)
+      .loadData<PreMigrationSettings>(this.storagePath)
       .pipe(
         switchMap<
           PreMigrationSettings,
@@ -99,9 +106,9 @@ export class SettingsService {
             this.updateSettings(
               settingsData.environmentsList
                 ? {
-                    ...validatedSchema.value,
-                    environments: settingsData.environmentsList
-                  }
+                  ...validatedSchema.value,
+                  environments: settingsData.environmentsList
+                }
                 : validatedSchema.value
             );
           }
@@ -115,6 +122,8 @@ export class SettingsService {
    * @returns
    */
   public saveSettings(): Observable<void> {
+    console.log('saveSettings');
+
     return this.store.select('settings').pipe(
       tap(() => {
         this.storageService.initiateSaving();
@@ -124,7 +133,7 @@ export class SettingsService {
       mergeMap((settings) =>
         this.storageService.saveData<Settings>(
           settings,
-          'settings',
+          this.storagePath,
           settings.storagePrettyPrint
         )
       )

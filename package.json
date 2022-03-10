@@ -1,7 +1,7 @@
 {
   "name": "mockoon",
   "description": "Mockoon is the easiest and quickest way to run mock APIs locally. No remote deployment, no account required, open source.",
-  "version": "1.18.1",
+  "version": "1.17.0",
   "author": {
     "name": "Guillaume Monnet",
     "email": "hi@255kb.dev",
@@ -40,7 +40,7 @@
     "package:win": "npm run clean-packages && electron-builder --publish never --win --config electron-builder.json",
     "package:win:appx": "npm run clean-packages && electron-builder --publish never --win --config electron-builder-appx.json",
     "package:linux": "npm run clean-packages && electron-builder --publish never --linux --config electron-builder.json",
-    "package:mac": "npm run clean-packages && electron-builder --publish never --mac --config electron-builder.json"
+    "package:mac": "npm run clean-packages && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --publish never --mac --config electron-builder.json"
   },
   "prettier": {
     "singleQuote": true,
@@ -49,8 +49,8 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@mockoon/commons": "2.9.1",
-    "@mockoon/commons-server": "2.16.4",
+    "@mockoon/commons": "2.9.0",
+    "@mockoon/commons-server": "2.16.0",
     "axios": "0.24.0",
     "chokidar": "3.5.2",
     "electron-json-storage": "4.5.0",
@@ -116,6 +116,7 @@
     "ngx-mask": "12.0.0",
     "prettier": "2.5.0",
     "prettier-plugin-organize-imports": "2.3.4",
+    "rxfire": "6.0.3",
     "rxjs": "6.6.7",
     "timers": "0.1.1",
     "ts-loader": "9.2.6",

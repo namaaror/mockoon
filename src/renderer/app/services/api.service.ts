@@ -7,18 +7,22 @@ import { MainAPI } from 'src/renderer/app/constants/common.constants';
 import { EnvironmentsService } from 'src/renderer/app/services/environments.service';
 import { EventsService } from 'src/renderer/app/services/events.service';
 import { ImportExportService } from 'src/renderer/app/services/import-export.service';
+import { LocalStorageService } from 'src/renderer/app/services/local-storage.service';
+import { SettingsService } from 'src/renderer/app/services/settings.service';
 import { Store } from 'src/renderer/app/stores/store';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   constructor(
+    private localStorageService: LocalStorageService,
     private environmentsService: EnvironmentsService,
     private eventsService: EventsService,
     private modalService: NgbModal,
     private importExportService: ImportExportService,
+    private settingsService: SettingsService,
     private store: Store,
     private zone: NgZone
-  ) {}
+  ) { }
 
   public init(
     changelogModal: ChangelogModalComponent,
@@ -99,8 +103,23 @@ export class ApiService {
 
     // listen to custom protocol queries
     MainAPI.receive('APP_CUSTOM_PROTOCOL', (action, parameters) => {
+      // Entry point into angular application for custom protocol.
+
+      console.log('Inside API receive');
       this.zone.run(() => {
+        // Set the settings path.
+        this.localStorageService.setItem('settingPath', parameters.url);
+        this.settingsService.loadSettings().subscribe();
+        this.settingsService.saveSettings().subscribe();
+        this.environmentsService.loadEnvironments().subscribe();
+        this.environmentsService.saveEnvironments().subscribe();
+
         switch (action) {
+          case 'load-settings':
+            this.environmentsService
+              .newEnvironmentsFromURL(parameters.url);
+            break;
+
           case 'load-environment':
           case 'load-export-data':
             this.environmentsService
@@ -112,16 +131,15 @@ export class ApiService {
     });
 
     // listen to file external changes
-    /* MainAPI.receive(
+    MainAPI.receive(
       'APP_FILE_EXTERNAL_CHANGE',
       (previousUUID: string, environmentPath: string) => {
         this.zone.run(() => {
           this.environmentsService
-            .reloadEnvironment(previousUUID, environmentPath)
-            .subscribe();
+            .reloadEnvironment(previousUUID, environmentPath).subscribe();
         });
       }
-    ); */
+    );
 
     // listen to environments and enable/disable some menu entries
     this.store

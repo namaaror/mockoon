@@ -12,7 +12,14 @@
     "build-res/icon_512x512x32.png"
   ],
   "win": {
-    "target": [{ "target": "nsis" }, { "target": "portable" }],
+    "target": [
+      {
+        "target": "nsis"
+      },
+      {
+        "target": "portable"
+      }
+    ],
     "publisherName": "1kB SARL-S",
     "rfc3161TimeStampServer": "http://timestamp.sectigo.com/?td=sha256"
   },
@@ -26,15 +33,21 @@
     "target": [
       {
         "target": "dmg",
-        "arch": ["universal"]
+        "arch": [
+          "universal"
+        ]
       },
       {
         "target": "dmg",
-        "arch": ["x64"]
+        "arch": [
+          "x64"
+        ]
       },
       {
         "target": "dmg",
-        "arch": ["arm64"]
+        "arch": [
+          "arm64"
+        ]
       }
     ],
     "type": "distribution",
@@ -71,11 +84,12 @@
       "Categories": "Development"
     }
   },
-  "afterSign": "scripts/notarize.js",
   "protocols": [
     {
       "name": "Mockoon",
-      "schemes": ["mockoon"],
+      "schemes": [
+        "mockoon"
+      ],
       "role": "Editor"
     }
   ]

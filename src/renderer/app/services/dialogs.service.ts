@@ -24,11 +24,7 @@ export class DialogsService {
       return null;
     }
 
-    // add json ext if was omitted. Required for unix where, despite the filter, a non json ext can be provided. (settings would be saved with erroneous ext, while electron-json-storage would save with json ext, resulting in some non working features, like file watching)
-    return await MainAPI.invoke(
-      'APP_REPLACE_FILEPATH_EXTENSION',
-      dialogResult.filePath
-    );
+    return dialogResult.filePath;
   }
 
   /**

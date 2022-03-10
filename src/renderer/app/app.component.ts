@@ -58,10 +58,10 @@ export class AppComponent extends Logger implements OnInit, AfterViewInit {
     private appQuitService: AppQuitService
   ) {
     super('[COMPONENT][APP]', toastService);
-    this.settingsService.loadSettings().subscribe();
-    this.settingsService.saveSettings().subscribe();
-    this.environmentsService.loadEnvironments().subscribe();
-    this.environmentsService.saveEnvironments().subscribe();
+    // this.settingsService.loadSettings().subscribe();
+    // this.settingsService.saveSettings().subscribe();
+    // this.environmentsService.loadEnvironments().subscribe();
+    // this.environmentsService.saveEnvironments().subscribe();
   }
 
   @HostListener('document:click')
