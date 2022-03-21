@@ -109,10 +109,10 @@ export class ApiService {
       this.zone.run(() => {
         // Set the settings path.
         this.localStorageService.setItem('settingPath', parameters.url);
-        this.settingsService.loadSettings().subscribe();
-        this.settingsService.saveSettings().subscribe();
-        this.environmentsService.loadEnvironments().subscribe();
-        this.environmentsService.saveEnvironments().subscribe();
+        // this.settingsService.loadSettings().subscribe();
+        // this.settingsService.saveSettings().subscribe();
+        // this.environmentsService.loadEnvironments().subscribe();
+        // this.environmentsService.saveEnvironments().subscribe();
 
         switch (action) {
           case 'load-settings':
