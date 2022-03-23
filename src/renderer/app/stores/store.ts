@@ -50,7 +50,7 @@ export class Store {
     routesFilter: ''
   });
 
-  constructor() {}
+  constructor() { }
 
   /**
    * Select store element
@@ -139,11 +139,11 @@ export class Store {
         map((store) =>
           store.activeEnvironmentUUID
             ? store.environmentsLogs[store.activeEnvironmentUUID].find(
-                (environmentLog) =>
-                  environmentLog.routeUUID === store.activeRouteUUID &&
-                  environmentLog.routeResponseUUID ===
-                    store.activeRouteResponseUUID
-              )
+              (environmentLog) =>
+                environmentLog.routeUUID === store.activeRouteUUID &&
+                environmentLog.routeResponseUUID ===
+                store.activeRouteResponseUUID
+            )
             : null
         )
       );
@@ -157,8 +157,8 @@ export class Store {
       map((environment) =>
         environment
           ? environment.routes.find(
-              (route) => route.uuid === this.store$.value.activeRouteUUID
-            )
+            (route) => route.uuid === this.store$.value.activeRouteUUID
+          )
           : null
       )
     );
@@ -172,9 +172,9 @@ export class Store {
       map((route) =>
         route
           ? route.responses.find(
-              (routeResponse) =>
-                routeResponse.uuid === this.store$.value.activeRouteResponseUUID
-            )
+            (routeResponse) =>
+              routeResponse.uuid === this.store$.value.activeRouteResponseUUID
+          )
           : null
       )
     );
@@ -188,9 +188,9 @@ export class Store {
       map((route) =>
         route
           ? route.responses.findIndex(
-              (routeResponse) =>
-                routeResponse.uuid === this.store$.value.activeRouteResponseUUID
-            ) + 1
+            (routeResponse) =>
+              routeResponse.uuid === this.store$.value.activeRouteResponseUUID
+          ) + 1
           : null
       )
     );

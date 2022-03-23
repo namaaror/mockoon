@@ -63,6 +63,7 @@ import {
 import { DataService } from 'src/renderer/app/services/data.service';
 import { DialogsService } from 'src/renderer/app/services/dialogs.service';
 import { EventsService } from 'src/renderer/app/services/events.service';
+import { LocalStorageService } from 'src/renderer/app/services/local-storage.service';
 import { ServerService } from 'src/renderer/app/services/server.service';
 import { StorageService } from 'src/renderer/app/services/storage.service';
 import { ToastsService } from 'src/renderer/app/services/toasts.service';
@@ -112,7 +113,8 @@ export class EnvironmentsService extends Logger {
     private storageService: StorageService,
     private dialogsService: DialogsService,
     protected toastService: ToastsService,
-    private http: HttpClient
+    private http: HttpClient,
+    private localStorageService: LocalStorageService
   ) {
     super('[SERVICE][ENVIRONMENTS]', toastService);
   }
@@ -125,6 +127,7 @@ export class EnvironmentsService extends Logger {
   public loadEnvironments(): Observable<
     { environment: Environment; path: string }[]
   > {
+    const basePath = this.localStorageService.getItem('basePath');
     return forkJoin([
       this.store.select('settings').pipe(
         filter((settings) => !!settings),
@@ -149,7 +152,7 @@ export class EnvironmentsService extends Logger {
         return forkJoin(
           settings.environments.map((environmentItem) =>
             this.storageService
-              .loadData<Environment>(environmentItem.path)
+              .loadData<Environment>(basePath + environmentItem.path)
               .pipe(
                 map((environment) =>
                   environment
@@ -190,7 +193,7 @@ export class EnvironmentsService extends Logger {
           MainAPI.send(
             'APP_WATCH_FILE',
             environmentData.environment.uuid,
-            environmentData.path
+            basePath + environmentData.path
           );
         });
 
@@ -214,6 +217,10 @@ export class EnvironmentsService extends Logger {
    * @returns
    */
   public saveEnvironments(): Observable<void> {
+    const basePath = this.localStorageService.getItem('basePath');
+
+    if (!basePath) return of();
+
     return this.store.select('environments').pipe(
       tap(() => {
         // saving flag must be turned on before the debounceTime, otherwise waiting for save to end before closing won't work
@@ -250,7 +257,7 @@ export class EnvironmentsService extends Logger {
           filter((environmentInfo) => environmentInfo.path !== undefined),
           // unwatch before saving
           mergeMap((environmentInfo) =>
-            from(MainAPI.invoke('APP_UNWATCH_FILE', environmentInfo.path)).pipe(
+            from(MainAPI.invoke('APP_UNWATCH_FILE', basePath + environmentInfo.path)).pipe(
               map(() => environmentInfo)
             )
           ),
@@ -267,7 +274,7 @@ export class EnvironmentsService extends Logger {
                   MainAPI.send(
                     'APP_WATCH_FILE',
                     environmentInfo.data.uuid,
-                    environmentInfo.path
+                    basePath + environmentInfo.path
                   );
                 })
               )
@@ -452,13 +459,14 @@ export class EnvironmentsService extends Logger {
    * @returns
    */
   public newEnvironmentsFromURL(settingsFile: string) {
+    const basePath = this.localStorageService.getItem('basePath');
     if (settingsFile) {
       return this.http.get(settingsFile, { responseType: 'text' })
         .subscribe(async data => {
           const settingsData = await JSON.parse(data);
           if (settingsData && settingsData['environments']) {
             settingsData['environments'].forEach(env => {
-              this.newEnvironmentFromURL(env.path).subscribe();
+              this.newEnvironmentFromURL(basePath + env.path).subscribe();
             });
           }
         });
@@ -538,6 +546,7 @@ export class EnvironmentsService extends Logger {
       activeEnvironment?: Environment;
     }
   ): Observable<Environment> {
+    const basePath = this.localStorageService.getItem('basePath');
     const pathSource = environmentPath
       ? of(environmentPath)
       : from(
@@ -557,13 +566,8 @@ export class EnvironmentsService extends Logger {
         const openedEnvironment = this.store
           .get('settings')
           .environments.find(
-            (environmentItem) => environmentItem.path === filePath
+            (environmentItem) => (basePath + environmentItem.path) === filePath
           );
-
-        // {
-        //   "uuid": "27c26966-aedc-484b-8a94-7674c9730e65",
-        //   "path": "/Users/namanarora/Desktop/mockoon_demo.json"
-        // }
 
         if (openedEnvironment !== undefined) {
           this.store.update(setActiveEnvironmentAction(openedEnvironment.uuid));

@@ -109,7 +109,7 @@ export interface MainAPIModel {
   receive(channel: 'APP_UPDATE_AVAILABLE', listener: () => void): void;
   receive(
     channel: 'APP_CUSTOM_PROTOCOL',
-    listener: (action: ProtocolAction, parameters: { url: string }) => void
+    listener: (action: ProtocolAction, parameters: { url: string, basePath: string }) => void
   ): void;
   receive(
     channel: 'APP_FILE_EXTERNAL_CHANGE',

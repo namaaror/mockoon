@@ -107,12 +107,8 @@ export class ApiService {
 
       console.log('Inside API receive');
       this.zone.run(() => {
-        // Set the settings path.
         this.localStorageService.setItem('settingPath', parameters.url);
-        // this.settingsService.loadSettings().subscribe();
-        // this.settingsService.saveSettings().subscribe();
-        // this.environmentsService.loadEnvironments().subscribe();
-        // this.environmentsService.saveEnvironments().subscribe();
+        this.localStorageService.setItem('basePath', parameters.basePath);
 
         switch (action) {
           case 'load-settings':

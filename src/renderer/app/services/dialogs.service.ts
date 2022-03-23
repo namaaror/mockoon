@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { OpenDialogOptions } from 'electron';
 import { MainAPI } from 'src/renderer/app/constants/common.constants';
+import { LocalStorageService } from 'src/renderer/app/services/local-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DialogsService {
+  constructor(private localStorageService: LocalStorageService) { }
+
   private filters = {
     openapi: [{ name: 'OpenAPI v2/v3', extensions: ['yaml', 'json'] }],
     json: [{ name: 'JSON', extensions: ['json'] }]
@@ -16,6 +19,7 @@ export class DialogsService {
    */
   public async showSaveDialog(title: string): Promise<string | null> {
     const dialogResult = await MainAPI.invoke('APP_SHOW_SAVE_DIALOG', {
+      defaultPath: this.localStorageService.getItem('basePath') + '/environments',
       filters: this.filters.json,
       title
     });
