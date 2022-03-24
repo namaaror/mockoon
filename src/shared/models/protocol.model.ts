@@ -3,4 +3,4 @@
  *
  * load-export-data --> load-environment
  */
-export type ProtocolAction = 'load-environment' | 'load-export-data' | 'load-settings';
+export type ProtocolAction = 'load-environment' | 'load-export-data' | 'load-settings' | 'quit';

@@ -136,18 +136,18 @@ export class EnvironmentsService extends Logger {
       from(MainAPI.invoke('APP_BUILD_STORAGE_FILEPATH', 'demo'))
     ]).pipe(
       switchMap(([settings, demoFilePath]) => {
-        if (!settings.environments.length && !settings.welcomeShown) {
-          this.logMessage('info', 'FIRST_LOAD_DEMO_ENVIRONMENT');
+        // if (!settings.environments.length && !settings.welcomeShown) {
+        //   this.logMessage('info', 'FIRST_LOAD_DEMO_ENVIRONMENT');
 
-          const defaultEnvironment = BuildDemoEnvironment();
+        //   const defaultEnvironment = BuildDemoEnvironment();
 
-          return of([
-            {
-              environment: defaultEnvironment,
-              path: demoFilePath
-            }
-          ]);
-        }
+        //   return of([
+        //     {
+        //       environment: defaultEnvironment,
+        //       path: demoFilePath
+        //     }
+        //   ]);
+        // }
 
         return forkJoin(
           settings.environments.map((environmentItem) =>

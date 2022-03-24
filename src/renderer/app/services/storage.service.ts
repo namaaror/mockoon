@@ -107,7 +107,7 @@ export class StorageService extends Logger {
 
     if (relativeData && relativeData['environments']) {
       relativeData['environments'].forEach(env => {
-        env.path = env.path.split(basePath)[1];
+        if (env.path && env.path.includes(basePath)) env.path = env.path.split(basePath)[1];
       });
     }
 

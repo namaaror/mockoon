@@ -75,10 +75,6 @@ export const initMainWindow = () => {
       // adding a timeout diff (100ms) between splashscreen close and mainWindow.show to fix a bug: https://github.com/electron/electron/issues/27353
       setTimeout(() => {
         showMainWindow(mainWindowState);
-
-        if (isDev) {
-          mainWindow.webContents.openDevTools();
-        }
       }, 100);
     }, 500);
   });
