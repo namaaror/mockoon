@@ -115,4 +115,8 @@ export interface MainAPIModel {
     channel: 'APP_FILE_EXTERNAL_CHANGE',
     listener: (previousUUID: string, environmentPath: string) => void
   ): void;
+  receive(
+    channel: 'URL_BASE_PATH',
+    listener: (data: any) => void
+  ): void;
 }

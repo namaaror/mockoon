@@ -33,7 +33,8 @@ export const IPCMainHandlerChannels = [
   'APP_WRITE_JSON_DATA',
   'APP_NEW_STORAGE_MIGRATION',
   'APP_GET_OS',
-  'APP_UNWATCH_FILE'
+  'APP_UNWATCH_FILE',
+  'URL_BASE_PATH'
 ];
 
 export const IPCRendererHandlerChannels = [
@@ -41,5 +42,6 @@ export const IPCRendererHandlerChannels = [
   'APP_SERVER_EVENT',
   'APP_UPDATE_AVAILABLE',
   'APP_CUSTOM_PROTOCOL',
-  'APP_FILE_EXTERNAL_CHANGE'
+  'APP_FILE_EXTERNAL_CHANGE',
+  'URL_BASE_PATH'
 ];

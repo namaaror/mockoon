@@ -24,6 +24,12 @@ export const parseProtocolArgs = (
     if (parts) {
       const action = parts[1] as ProtocolAction;
       const parameters = qsParse(parts[2]);
+      const data = {
+        url: parameters?.url,
+        basePath: parameters?.basePath
+      }
+
+      mainWindow.webContents.send('URL_BASE_PATH', data);
 
       if (!validActions.includes(action)) {
         return;

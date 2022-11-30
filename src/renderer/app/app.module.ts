@@ -1,6 +1,6 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HttpClientModule } from '@angular/common/http';
-import { ErrorHandler, NgModule, SecurityContext } from '@angular/core';
+import { ErrorHandler, NgModule, SecurityContext, APP_INITIALIZER } from '@angular/core';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import {
   connectFunctionsEmulator,
@@ -59,9 +59,12 @@ import { NgbTooltipConfigFactory } from 'src/renderer/app/modules-config/ngb-too
 import { NgbTypeaheadConfigFactory } from 'src/renderer/app/modules-config/ngb-typeahead.config';
 import { NgbConfigFactory } from 'src/renderer/app/modules-config/ngb.config';
 import { GlobalErrorHandler } from 'src/renderer/app/services/global-error-handler';
+import { LocalStorageService } from 'src/renderer/app/services/local-storage.service';
 import { environment } from 'src/renderer/environments/environment';
 import { Config } from 'src/shared/config';
 import { AppComponent } from './app.component';
+import { MainAPI } from 'src/renderer/app/constants/common.constants';
+import { Logger } from 'src/renderer/app/classes/logger';
 
 @NgModule({
   declarations: [
@@ -133,6 +136,11 @@ import { AppComponent } from './app.component';
   ],
   providers: [
     {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAppCustomLogic,
+      multi: true,
+    },
+    {
       provide: ErrorHandler,
       useClass: GlobalErrorHandler
     },
@@ -160,4 +168,23 @@ import { AppComponent } from './app.component';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule extends Logger {
+  constructor(private localStorageService: LocalStorageService) {
+    super('[APP][MODULE]');
+    MainAPI.receive('URL_BASE_PATH', (data) => {
+      this.logMessage('info', 'DEBUG', { debug: 'URL_BASE_PATH event received!' });
+      this.localStorageService.setItem('settingPath', data.url);
+      this.localStorageService.setItem('basePath', data.basePath);
+    });
+  }
+}
+
+// Halt angular initialisation for 2.5s to allow receiving the event.
+export function initializeAppCustomLogic(): () => Promise<void> {
+  return () =>
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 2500);
+    });
+}

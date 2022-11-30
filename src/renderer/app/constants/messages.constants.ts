@@ -6,17 +6,17 @@ import { ToastTypes } from 'src/renderer/app/models/toasts.model';
 
 export const Messages: {
   [key in MessageCodes]:
-    | ((messageParams: MessageParams) => {
-        message: string;
-        loggerMessage?: string;
-        showToast: false;
-      })
-    | ((messageParams: MessageParams) => {
-        message: string;
-        loggerMessage?: string;
-        showToast: true;
-        toastType: ToastTypes;
-      });
+  | ((messageParams: MessageParams) => {
+    message: string;
+    loggerMessage?: string;
+    showToast: false;
+  })
+  | ((messageParams: MessageParams) => {
+    message: string;
+    loggerMessage?: string;
+    showToast: true;
+    toastType: ToastTypes;
+  });
 } = {
   INITIALIZING_APP: () => ({
     message: 'Initializing application',
@@ -26,9 +26,8 @@ export const Messages: {
     const errorInfo =
       typeof messageParams.error === 'string'
         ? messageParams.error
-        : `${messageParams.error.message || ''} - ${
-            messageParams.error.stack || ''
-          }`;
+        : `${messageParams.error.message || ''} - ${messageParams.error.stack || ''
+        }`;
 
     return {
       message: `Unexpected error: ${errorInfo}`,
@@ -207,9 +206,8 @@ export const Messages: {
     showToast: false
   }),
   ENVIRONMENT_MORE_RECENT_VERSION: (messageParams) => ({
-    message: `Environment "${
-      messageParams.name || messageParams.uuid
-    }" was created with a more recent version of Mockoon. Please upgrade.`,
+    message: `Environment "${messageParams.name || messageParams.uuid
+      }" was created with a more recent version of Mockoon. Please upgrade.`,
     showToast: true,
     toastType: 'warning'
   }),
@@ -219,9 +217,8 @@ export const Messages: {
     toastType: 'warning'
   }),
   ENVIRONMENT_MIGRATION_FAILED: (messageParams) => ({
-    message: `Migration of environment "${
-      messageParams.name || messageParams.uuid
-    }" failed. The environment was automatically repaired and migrated to the latest version.`,
+    message: `Migration of environment "${messageParams.name || messageParams.uuid
+      }" failed. The environment was automatically repaired and migrated to the latest version.`,
     showToast: true,
     toastType: 'warning'
   }),
@@ -232,22 +229,24 @@ export const Messages: {
   }),
   STORAGE_LOAD_ERROR: (messageParams) => ({
     message: `Error while loading ${messageParams.path}. Please restart the application.`,
-    loggerMessage: `Error while loading ${messageParams.path}: ${
-      messageParams.error.code || ''
-    } ${messageParams.error.message || ''}`,
+    loggerMessage: `Error while loading ${messageParams.path}: ${messageParams.error.code || ''
+      } ${messageParams.error.message || ''}`,
     showToast: true,
     toastType: 'error'
   }),
   STORAGE_SAVE_ERROR: (messageParams) => ({
     message: `Error while saving ${messageParams.path}. If the problem persists please restart the application.`,
-    loggerMessage: `Error while saving ${messageParams.path}: ${
-      messageParams.error.code || ''
-    } ${messageParams.error.message || ''}`,
+    loggerMessage: `Error while saving ${messageParams.path}: ${messageParams.error.code || ''
+      } ${messageParams.error.message || ''}`,
     showToast: true,
     toastType: 'error'
   }),
   MIGRATING_ENVIRONMENT: (messageParams) => ({
     message: `Migrating environment ${messageParams.environmentUUID} starting at ${messageParams.migrationStartId}`,
+    showToast: false
+  }),
+  DEBUG: (messageParams) => ({
+    message: `${messageParams.debug}`,
     showToast: false
   })
 };

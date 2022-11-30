@@ -34,19 +34,7 @@
       {
         "target": "dmg",
         "arch": [
-          "universal"
-        ]
-      },
-      {
-        "target": "dmg",
-        "arch": [
           "x64"
-        ]
-      },
-      {
-        "target": "dmg",
-        "arch": [
-          "arm64"
         ]
       }
     ],
@@ -59,30 +47,6 @@
   },
   "dmg": {
     "sign": false
-  },
-  "linux": {
-    "target": [
-      {
-        "target": "AppImage"
-      },
-      {
-        "target": "snap"
-      },
-      {
-        "target": "deb"
-      },
-      {
-        "target": "rpm"
-      }
-    ],
-    "category": "Development",
-    "icon": "build-res",
-    "artifactName": "mockoon-${version}.${ext}",
-    "desktop": {
-      "Name": "Mockoon",
-      "Type": "Application",
-      "Categories": "Development"
-    }
   },
   "protocols": [
     {

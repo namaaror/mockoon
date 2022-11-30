@@ -107,8 +107,6 @@ export class ApiService {
 
       console.log('Inside API receive');
       this.zone.run(() => {
-        this.localStorageService.setItem('settingPath', parameters.url);
-        this.localStorageService.setItem('basePath', parameters.basePath);
 
         switch (action) {
           case 'load-settings':

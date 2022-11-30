@@ -25,9 +25,9 @@ const setAppAndLogPath = (path: string) => {
 };
 
 // set local data folder when in dev mode or running tests
-if (isTesting || isDev) {
-  setAppAndLogPath(pathResolve('./tmp'));
-}
+// if (isTesting || isDev) {
+setAppAndLogPath(pathResolve('./tmp'));
+// }
 
 // set local data folder when is portable mode
 const portableExecDir = process.env.PORTABLE_EXECUTABLE_DIR;

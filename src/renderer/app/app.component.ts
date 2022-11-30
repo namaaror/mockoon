@@ -23,6 +23,7 @@ import { ApiService } from 'src/renderer/app/services/api.service';
 import { AppQuitService } from 'src/renderer/app/services/app-quit.services';
 import { EnvironmentsService } from 'src/renderer/app/services/environments.service';
 import { EventsService } from 'src/renderer/app/services/events.service';
+import { LocalStorageService } from 'src/renderer/app/services/local-storage.service';
 import { SettingsService } from 'src/renderer/app/services/settings.service';
 import { TelemetryService } from 'src/renderer/app/services/telemetry.service';
 import { ToastsService } from 'src/renderer/app/services/toasts.service';
@@ -55,9 +56,13 @@ export class AppComponent extends Logger implements OnInit, AfterViewInit {
     private uiService: UIService,
     private apiService: ApiService,
     private settingsService: SettingsService,
-    private appQuitService: AppQuitService
+    private appQuitService: AppQuitService,
+    private localStorageService: LocalStorageService
   ) {
     super('[COMPONENT][APP]', toastService);
+    this.logMessage('info', 'DEBUG', { debug: 'Inside app.component.ts' });
+    this.logMessage('info', 'DEBUG', { debug: `${this.localStorageService.getItem('settingPath')}` });
+    this.logMessage('info', 'DEBUG', { debug: `${this.localStorageService.getItem('basePath')}` });
     this.settingsService.loadSettings().subscribe();
     this.settingsService.saveSettings().subscribe();
     this.environmentsService.loadEnvironments().subscribe();
